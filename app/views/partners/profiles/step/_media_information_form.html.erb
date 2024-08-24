@@ -1,0 +1,29 @@
+<%= simple_form_for partner, data: { controller: "form-input" }, url: partners_profile_path(submitted_partial: "media_information") do |f| %>
+  <%= f.fields_for :profile, profile do |pf| %>
+    <div class="form-group">
+      <%= pf.input :website, label: "Website", class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= pf.input :facebook, label: "Facebook", class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= pf.input :twitter, label: "Twitter", class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= pf.input :instagram, label: "Instagram", class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= pf.check_box :no_social_media_presence, as: :boolean %>&nbsp;
+      <%= pf.label :no_social_media_presence, "No Social Media Presence" %>
+    </div>
+  <% end %>
+
+  <div class="form-group mt-4 d-flex justify-content-start">
+    <%= f.button :submit, 'Save and Next', class: 'btn btn-primary mr-2' %>
+    <%= link_to 'Submit for Approval', partners_approval_request_path, method: :post, class: 'btn btn-success' %>
+  </div>
+<% end %>
