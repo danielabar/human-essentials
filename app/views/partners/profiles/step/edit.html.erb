@@ -1,0 +1,87 @@
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <% content_for :title, "Step Editing - #{current_partner.name}" %>
+        <h1><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit My Organization&nbsp;&nbsp;&nbsp;
+          <%= partner_status_badge(current_partner) %>
+          <small>for <%= current_partner.name %></small>
+        </h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="<%= partner_user_root_path %>"><i class="fa fa-home fa-lg"></i></a></li>
+          <li class="breadcrumb-item">
+            <a href="<%= edit_partners_profile_path %>"><%= "#{current_partner.name}" %></a></li>
+          <li class="breadcrumb-item"><a href="#">Edit</a></li>
+        </ol>
+      </div>
+    </div>
+  </div><!-- /.container-fluid -->
+</section>
+
+<%# TODO: 4504 more descriptive id than accordionExample %>
+<div class="accordion" id="accordionExample" data-controller="accordion">
+
+  <%# Agency Information: By default, this section is expanded and is always rendered %>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button <%= @open_section != 'agency_information' ? 'collapsed' : '' %>" type="button" data-bs-toggle="collapse" data-bs-target="#agency_information" aria-expanded="<%= @open_section == 'agency_information' %>" aria-controls="agency_information">
+        Agency Information
+      </button>
+    </h2>
+    <%# TODO: 4504 remove data-accordion-target, we can get everything from top level accordion element %>
+    <div id="agency_information"
+        class="accordion-collapse collapse <%= @open_section == 'agency_information' ? 'show' : '' %>"
+        data-bs-parent="#accordionExample"
+        data-accordion-target="tbd">
+      <div class="accordion-body">
+        <%= render 'partners/profiles/step/agency_information_form', partner: current_partner, profile: current_partner.profile %>
+      </div>
+    </div>
+  </div>
+
+  <%# Program Delivery Address: By default, this section is collapsed and always rendered %>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button <%= @open_section != 'program_delivery_address' ? 'collapsed' : '' %>" type="button" data-bs-toggle="collapse" data-bs-target="#program_delivery_address" aria-expanded="<%= @open_section == 'program_delivery_address' %>" aria-controls="program_delivery_address">
+        Program / Delivery Address
+      </button>
+    </h2>
+    <div id="program_delivery_address" class="accordion-collapse collapse <%= @open_section == 'program_delivery_address' ? 'show' : '' %>" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <%= render 'partners/profiles/step/program_delivery_address_form', partner: current_partner, profile: current_partner.profile %>
+      </div>
+    </div>
+  </div>
+
+  <%# Dynamically rendered partials based on partner.partials_to_show %>
+  <% current_partner.partials_to_show.each do |partial| %>
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button <%= @open_section != partial ? 'collapsed' : '' %>" type="button" data-bs-toggle="collapse" data-bs-target="#<%= partial %>" aria-expanded="<%= @open_section == partial %>" aria-controls="<%= partial %>">
+          <%= partial.humanize %>
+        </button>
+      </h2>
+      <div id="<%= partial %>" class="accordion-collapse collapse <%= @open_section == partial ? 'show' : '' %>" data-bs-parent="#accordionExample">
+        <div class="accordion-body">
+          <%= render "partners/profiles/step/#{partial}_form", partner: current_partner, profile: current_partner.profile %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <%# Settings: By default, this section is collapsed %>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button <%= @open_section != 'partner_settings' ? 'collapsed' : '' %>" type="button" data-bs-toggle="collapse" data-bs-target="#settings" aria-expanded="<%= @open_section == 'partner_settings' %>" aria-controls="settings">
+        Settings
+      </button>
+    </h2>
+    <div id="settings" class="accordion-collapse collapse <%= @open_section == 'partner_settings' ? 'show' : '' %>" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <%= render 'partners/profiles/step/partner_settings_form', partner: current_partner, profile: current_partner.profile %>
+      </div>
+    </div>
+  </div>
+</div>
