@@ -21,28 +21,35 @@ module Partners
         if Flipper.enabled?("partner_step_form")
           # TODO: 4504 - temp debug - need to validate this to ensure its one of an allowed value!
           # probably better to pass in the override into NextStepService and use it there, then its easier to test
-          puts "=== PROFILE UPDATE OVERRIDE: #{params[:open_section_override]}"
           submitted_partial = params[:submitted_partial]
-          open_section = params[:open_section_override] || Partners::NextStepService.new(current_partner, submitted_partial).next_step
-          # open_section = Partners::NextStepService.new(current_partner, submitted_partial).call
+          open_section = params[:open_section_override] || Partners::NextStepService.new(current_partner, submitted_partial).call
           redirect_to edit_partners_profile_path(open_section: open_section)
         else
           flash[:success] = "Details were successfully updated."
           redirect_to partners_profile_path
         end
       else
-        flash[:error] = "There is a problem. Try again:  %s" % result.error
-        render Flipper.enabled?("partner_step_form") ? "partners/profiles/step/edit" : :edit
+        flash.now[:error] = "There is a problem. Try again:  %s" % result.error
+        if Flipper.enabled?("partner_step_form")
+          @open_section = params[:submitted_partial] || "agency_information"
+          render "partners/profiles/step/edit"
+        else
+          render :edit
+        end
       end
     end
 
     private
 
     def partner_params
+      return {} unless params.dig(:partner)
+
       params.require(:partner).permit(:name)
     end
 
     def profile_params
+      return {} unless params.dig(:partner, :profile)
+
       params.require(:partner).require(:profile).permit(
         :agency_type,
         :other_agency_type,

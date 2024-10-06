@@ -1,6 +1,5 @@
 <%= simple_form_for partner, data: { controller: "form-input" }, url: partners_profile_path(submitted_partial: "partner_settings") do |f| %>
   <%= f.fields_for :profile, profile do |pf| %>
-    <!-- Settings Section -->
     <% if pf.object.organization.enable_quantity_based_requests? %>
       <div class="form-group">
         <%= pf.check_box :enable_quantity_based_requests, as: :boolean %>&nbsp;
@@ -23,8 +22,5 @@
     <% end %>
   <% end %>
 
-  <!-- Submit Buttons -->
-  <div class="form-group mt-4 d-flex justify-content-start">
-    <%= link_to 'Submit for Approval', partners_approval_request_path, method: :post, class: 'btn btn-success' %>
-  </div>
+  <%= render partial: 'partners/profiles/step/form_actions', locals: { f: f, profile: profile, button_label: 'Save' } %>
 <% end %>
