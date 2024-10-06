@@ -23,8 +23,7 @@ module Partners
           # probably better to pass in the override into NextStepService and use it there, then its easier to test
           puts "=== PROFILE UPDATE OVERRIDE: #{params[:open_section_override]}"
           submitted_partial = params[:submitted_partial]
-          open_section = params[:open_section_override] || Partners::NextStepService.new(current_partner, submitted_partial).next_step
-          # open_section = Partners::NextStepService.new(current_partner, submitted_partial).call
+          open_section = params[:open_section_override] || Partners::NextStepService.new(current_partner, submitted_partial).call
           redirect_to edit_partners_profile_path(open_section: open_section)
         else
           flash[:success] = "Details were successfully updated."
