@@ -1,7 +1,5 @@
 <%= simple_form_for partner, data: { controller: "form-input" }, url: partners_profile_path(submitted_partial: "pick_up_person") do |f| %>
   <%= f.fields_for :profile, profile do |pf| %>
-    <h3><strong>Pick Up Person</strong></h3>
-
     <div class="form-group">
       <%= pf.input :pick_up_name, label: "Pick Up Person Name", class: "form-control" %>
     </div>
@@ -13,8 +11,5 @@
     </div>
   <% end %>
 
-  <div class="form-group mt-4 d-flex justify-content-start">
-    <%= f.button :submit, 'Save and Next', class: 'btn btn-primary mr-2' %>
-    <%= link_to 'Submit for Approval', partners_approval_request_path, method: :post, class: 'btn btn-success' %>
-  </div>
+  <%= render partial: 'partners/profiles/step/form_actions', locals: { f: f, profile: profile } %>
 <% end %>

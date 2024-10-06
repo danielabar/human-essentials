@@ -1,10 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
 
-// TODO: 4504 - probably many edge cases including:
-// 1. User closes the current section
-// 2. User opens a new section while everything is closed
-// 3. Is 300 ms the right delay value for coordinating open/close events?
-
 // Connects to data-controller="accordion"
 // Capture the form in the closed section and wait to submit it when the new section is opened, detect explicit close or open without hide.
 export default class extends Controller {
@@ -13,30 +8,29 @@ export default class extends Controller {
     this.isNewSectionOpening = false; // Flag to determine if a new section is being opened
     this.previousEventWasHide = false; // Track if the previous event was a 'hidden' event
 
-    // Handle collapse (hidden) event
     this.element.addEventListener(
       "hidden.bs.collapse",
       this.onSectionHidden.bind(this)
     );
-
-    // Handle expand (shown) event
     this.element.addEventListener(
       "shown.bs.collapse",
       this.onSectionShown.bind(this)
     );
+
+    // Scroll to the open section if the 'open_section' parameter exists
+    this.scrollToOpenSection();
   }
 
   disconnect() {
-    this.element.removeEventListener( "hidden.bs.collapse" );
-    this.element.removeEventListener( "shown.bs.collapse" );
+    this.element.removeEventListener("hidden.bs.collapse");
+    this.element.removeEventListener("shown.bs.collapse");
   }
 
-  // Called when an accordion section is collapsed
   onSectionHidden(event) {
     console.log("=== SECTION HIDDEN", event);
     const form = event.target.querySelector("form");
 
-    // Save the form to submit later when the new section opens
+    // Save the form to submit later if and when a new section opens
     if (form) {
       this.formToSubmit = form;
     }
@@ -47,9 +41,17 @@ export default class extends Controller {
     // Check if the user explicitly closed the section by waiting for the shown event
     setTimeout(() => {
       if (!this.isNewSectionOpening) {
-        // This means the user explicitly closed the section
-        console.log("=== SECTION EXPLICITLY CLOSED BY THE USER");
-        // TODO: 4504 - should we submit the form that just got closed now?
+        // This means the user explicitly closed the section without opening a new section
+        console.log("=== SECTION EXPLICITLY CLOSED BY THE USER AND NOTHING NEW OPENED");
+        if (this.formToSubmit) {
+          const hiddenInput = document.createElement("input");
+          hiddenInput.type = "hidden";
+          hiddenInput.name = "open_section_override";
+          hiddenInput.value = "all_closed";
+
+          this.formToSubmit.appendChild(hiddenInput);
+          this.submitForm();
+        }
       }
     }, 300);
   }
@@ -68,14 +70,14 @@ export default class extends Controller {
 
     // Submit the form from the previously closed section (if any)
     if (this.formToSubmit) {
+      console.log(`=== ADDING OPEN_SECTION_OVERRIDE HIDDEN INPUT TO FORM, VALUE: ${event.target.id}`);
       const hiddenInput = document.createElement("input");
       hiddenInput.type = "hidden";
-      hiddenInput.name = "open_section_override"; // Rails naming convention?
+      hiddenInput.name = "open_section_override";
       hiddenInput.value = event.target.id;
 
       this.formToSubmit.appendChild(hiddenInput);
-      this.formToSubmit.requestSubmit();
-      this.formToSubmit = null; // Clear the form reference after submission
+      this.submitForm();
     }
 
     // Reset the flag after a small delay to account for user interactions
@@ -83,5 +85,39 @@ export default class extends Controller {
       this.isNewSectionOpening = false;
       this.previousEventWasHide = false; // Reset the flag after the shown event
     }, 300);
+  }
+
+  // Scroll to the open section based on URL parameter
+  scrollToOpenSection() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const openSection = urlParams.get('open_section');
+
+    if (openSection) {
+      const section = document.querySelector(`#${openSection}`);
+
+      if (section) {
+        // Find the closest accordion header (h2) for the open section
+        const header = section.previousElementSibling; // h2.accordion-header is the sibling before the div
+
+        if (header && header.classList.contains('accordion-header')) {
+          header.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          // Fallback to scrolling to the section itself if header is not found
+          section.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+    }
+  }
+
+  submitForm() {
+    const hasSubmitButton = this.formToSubmit.querySelector('[type="submit"], button[type="submit"]');
+
+    if (hasSubmitButton) {
+      console.log("=== SUBMITTING FORM");
+      this.formToSubmit.requestSubmit();
+    } else {
+      console.log("=== FORM HAS NO SUBMIT BUTTON");
+    }
+    this.formToSubmit = null;
   }
 }

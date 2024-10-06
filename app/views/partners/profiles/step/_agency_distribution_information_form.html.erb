@@ -15,8 +15,5 @@
     </div>
   <% end %>
 
-  <div class="form-group mt-4 d-flex justify-content-start">
-    <%= f.button :submit, 'Save and Next', class: 'btn btn-primary mr-2' %>
-    <%= link_to 'Submit for Approval', partners_approval_request_path, method: :post, class: 'btn btn-success' %>
-  </div>
+ <%= render partial: 'partners/profiles/step/form_actions', locals: { f: f, profile: profile } %>
 <% end %>

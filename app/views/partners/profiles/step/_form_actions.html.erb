@@ -1,0 +1,13 @@
+<%# locals: (f:, profile:, button_label: 'Save and Next') %>
+
+<div class="form-group mt-4 d-flex justify-content-start">
+  <%= f.button :submit, button_label, class: 'btn btn-primary mr-2' %>
+
+  <% if show_submit_for_approval?(profile.partner) %>
+    <% if submit_for_approval_disabled?(profile) %>
+      <span class="btn btn-success disabled">Submit Profile for Approval</span>
+    <% else %>
+      <%= link_to 'Submit Profile for Approval', partners_approval_request_path, method: :post, class: 'btn btn-success' %>
+    <% end %>
+  <% end %>
+</div>
