@@ -30,6 +30,7 @@ module Partners
           redirect_to partners_profile_path
         end
       else
+        # TODO: 4504 - if step is enabled, might also need to maintain open_section here for error rendering
         flash[:error] = "There is a problem. Try again:  %s" % result.error
         render Flipper.enabled?("partner_step_form") ? "partners/profiles/step/edit" : :edit
       end

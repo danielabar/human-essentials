@@ -39,8 +39,7 @@ export default class extends Controller {
         // This means the user explicitly closed the section without opening a new section
         console.log("=== SECTION EXPLICITLY CLOSED BY THE USER AND NOTHING NEW OPENED");
         if (this.formToSubmit) {
-          this.formToSubmit.requestSubmit();
-          this.formToSubmit = null; // Clear the form reference after submission
+          this.submitForm();
         }
       }
     }, 300);
@@ -60,15 +59,14 @@ export default class extends Controller {
 
     // Submit the form from the previously closed section (if any)
     if (this.formToSubmit) {
-      console.log("=== SUBMITTING FORM FROM PREVIOUSLY CLOSED SECTION");
+      console.log("=== ADDING OPEN_SECTION_OVERRIDE HIDDEN INPUT TO FORM");
       const hiddenInput = document.createElement("input");
       hiddenInput.type = "hidden";
       hiddenInput.name = "open_section_override";
       hiddenInput.value = event.target.id;
 
       this.formToSubmit.appendChild(hiddenInput);
-      this.formToSubmit.requestSubmit();
-      this.formToSubmit = null; // Clear the form reference after submission
+      this.submitForm();
     }
 
     // Reset the flag after a small delay to account for user interactions
@@ -76,5 +74,17 @@ export default class extends Controller {
       this.isNewSectionOpening = false;
       this.previousEventWasHide = false; // Reset the flag after the shown event
     }, 300);
+  }
+
+  submitForm() {
+    const hasSubmitButton = this.formToSubmit.querySelector('[type="submit"], button[type="submit"]');
+
+    if (hasSubmitButton) {
+      console.log("=== SUBMITTING FORM");
+      this.formToSubmit.requestSubmit();
+    } else {
+      console.log("=== FORM HAS NO SUBMIT BUTTON");
+    }
+    this.formToSubmit = null;
   }
 }
