@@ -39,6 +39,12 @@ export default class extends Controller {
         // This means the user explicitly closed the section without opening a new section
         console.log("=== SECTION EXPLICITLY CLOSED BY THE USER AND NOTHING NEW OPENED");
         if (this.formToSubmit) {
+          const hiddenInput = document.createElement("input");
+          hiddenInput.type = "hidden";
+          hiddenInput.name = "open_section_override";
+          hiddenInput.value = "all_closed";
+
+          this.formToSubmit.appendChild(hiddenInput);
           this.submitForm();
         }
       }
