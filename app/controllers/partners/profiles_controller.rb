@@ -42,10 +42,14 @@ module Partners
     private
 
     def partner_params
+      return {} unless params.dig(:partner)
+
       params.require(:partner).permit(:name)
     end
 
     def profile_params
+      return {} unless params.dig(:partner, :profile)
+
       params.require(:partner).require(:profile).permit(
         :agency_type,
         :other_agency_type,
