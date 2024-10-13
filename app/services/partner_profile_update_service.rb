@@ -15,7 +15,7 @@ class PartnerProfileUpdateService
       @return_value = @partner.valid?
 
       if @return_value
-        @profile.served_areas.destroy_all
+        @profile.served_areas.destroy_all if @profile_params[:served_areas_attributes].present?
         @profile.attributes = @profile_params
         @profile.save!(context: :edit)
       end
