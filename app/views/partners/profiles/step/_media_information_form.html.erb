@@ -24,6 +24,10 @@
 
   <div class="form-group mt-4 d-flex justify-content-start">
     <%= f.button :submit, 'Save and Next', class: 'btn btn-primary mr-2' %>
-    <%= link_to 'Submit Profile for Approval', partners_approval_request_path, method: :post, class: 'btn btn-success' %>
+    <% if profile.errors.any? %>
+      <span class="btn btn-success disabled">Submit Profile for Approval</span>
+    <% else %>
+      <%= link_to 'Submit Profile for Approval', partners_approval_request_path, method: :post, class: 'btn btn-success' %>
+    <% end %>
   </div>
 <% end %>
