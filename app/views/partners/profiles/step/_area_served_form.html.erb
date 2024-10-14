@@ -1,7 +1,5 @@
 <%= simple_form_for partner, data: { controller: "form-input" }, url: partners_profile_path(submitted_partial: "area_served") do |f| %>
   <%= f.simple_fields_for :profile, profile do |pf| %>
-    <h3><strong>Area Served (County / Client Share %)</strong></h3>
-
     <div data-controller="area-served">
       <fieldset style="margin-bottom: 2rem">
         <legend></legend>
