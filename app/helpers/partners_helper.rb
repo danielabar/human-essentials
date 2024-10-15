@@ -27,6 +27,14 @@ module PartnersHelper
     end
   end
 
+  def show_submit_for_approval?(partner)
+    partner.invited? || partner.recertification_required?
+  end
+
+  def submit_for_approval_disabled?(partner_profile)
+    partner_profile.errors.any?
+  end
+
   def partner_status_badge(partner)
     if partner.status == "approved"
       tag.span partner.display_status, class: %w(badge badge-pill badge-primary bg-primary float-right)
