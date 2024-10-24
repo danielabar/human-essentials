@@ -100,10 +100,10 @@ export default class extends Controller {
         const header = section.previousElementSibling; // h2.accordion-header is the sibling before the div
 
         if (header && header.classList.contains('accordion-header')) {
-          header.scrollIntoView({ behavior: "smooth", block: "start" });
+          header.scrollIntoView({ behavior: "instant" });
         } else {
           // Fallback to scrolling to the section itself if header is not found
-          section.scrollIntoView({ behavior: "smooth", block: "start" });
+          section.scrollIntoView({ behavior: "instant" });
         }
       }
     }
