@@ -26,7 +26,9 @@
 
 <div class="accordion mx-5 mt-3" id="accordionExample" data-controller="accordion">
 
+  <%# TODO: 4504 Breaking up forms into turbo-frames seems to break validation? %>
   <%# Agency Information: By default, this section is expanded and is always rendered %>
+  <turbo-frame id="agency-information-frame" data-turbo-action="advance">
   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button <%= @open_section != 'agency_information' ? 'collapsed' : '' %>" type="button" data-bs-toggle="collapse" data-bs-target="#agency_information" aria-expanded="<%= @open_section == 'agency_information' %>" aria-controls="agency_information">
@@ -41,12 +43,14 @@
         class="accordion-collapse collapse <%= @open_section == 'agency_information' ? 'show' : '' %>"
         data-bs-parent="#accordionExample">
       <div class="accordion-body">
-        <%= render 'partners/profiles/step/agency_information_form', partner: current_partner, profile: current_partner.profile %>
+          <%= render 'partners/profiles/step/agency_information_form', partner: current_partner, profile: current_partner.profile %>
       </div>
     </div>
   </div>
+  </turbo-frame>
 
   <%# Program Delivery Address: By default, this section is collapsed and always rendered %>
+  <turbo-frame id="program-delivery-address-frame" data-turbo-action="advance">
   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button <%= @open_section != 'program_delivery_address' ? 'collapsed' : '' %>" type="button" data-bs-toggle="collapse" data-bs-target="#program_delivery_address" aria-expanded="<%= @open_section == 'program_delivery_address' %>" aria-controls="program_delivery_address">
@@ -59,13 +63,15 @@
     </h2>
     <div id="program_delivery_address" class="accordion-collapse collapse <%= @open_section == 'program_delivery_address' ? 'show' : '' %>" data-bs-parent="#accordionExample">
       <div class="accordion-body">
-        <%= render 'partners/profiles/step/program_delivery_address_form', partner: current_partner, profile: current_partner.profile %>
+          <%= render 'partners/profiles/step/program_delivery_address_form', partner: current_partner, profile: current_partner.profile %>
       </div>
     </div>
   </div>
+  </turbo-frame>
 
   <%# Dynamically rendered partials based on partner.partials_to_show %>
   <% current_partner.partials_to_show.each do |partial| %>
+    <turbo-frame id='<%= "#{partial}-frame" %>' data-turbo-action="advance">
     <div class="accordion-item">
       <h2 class="accordion-header">
         <button class="accordion-button <%= @open_section != partial ? 'collapsed' : '' %>" type="button" data-bs-toggle="collapse" data-bs-target="#<%= partial %>" aria-expanded="<%= @open_section == partial %>" aria-controls="<%= partial %>">
@@ -78,13 +84,15 @@
       </h2>
       <div id="<%= partial %>" class="accordion-collapse collapse <%= @open_section == partial ? 'show' : '' %>" data-bs-parent="#accordionExample">
         <div class="accordion-body">
-          <%= render "partners/profiles/step/#{partial}_form", partner: current_partner, profile: current_partner.profile %>
+            <%= render "partners/profiles/step/#{partial}_form", partner: current_partner, profile: current_partner.profile %>
         </div>
       </div>
     </div>
+    </turbo-frame>
   <% end %>
 
   <%# Partner Settings: By default, this section is collapsed %>
+  <turbo-frame id="partner-settings-frame" data-turbo-action="advance">
   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button <%= @open_section != 'partner_settings' ? 'collapsed' : '' %>" type="button" data-bs-toggle="collapse" data-bs-target="#partner_settings" aria-expanded="<%= @open_section == 'partner_settings' %>" aria-controls="settings">
@@ -97,8 +105,9 @@
     </h2>
     <div id="partner_settings" class="accordion-collapse collapse <%= @open_section == 'partner_settings' ? 'show' : '' %>" data-bs-parent="#accordionExample">
       <div class="accordion-body">
-        <%= render 'partners/profiles/step/partner_settings_form', partner: current_partner, profile: current_partner.profile %>
+          <%= render 'partners/profiles/step/partner_settings_form', partner: current_partner, profile: current_partner.profile %>
       </div>
     </div>
   </div>
+  </turbo-frame>
 </div>

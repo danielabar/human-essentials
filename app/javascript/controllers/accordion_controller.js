@@ -89,7 +89,7 @@ export default class extends Controller {
 
     if (hasSubmitButton) {
       console.log("=== SUBMITTING FORM");
-      this.disableAccordionButtons();
+      // this.disableAccordionButtons();
       this.formToSubmit.requestSubmit();
     } else {
       console.log("=== FORM HAS NO SUBMIT BUTTON");
@@ -97,6 +97,8 @@ export default class extends Controller {
     this.formToSubmit = null;
   }
 
+  // TODO: 4504 if get scroll preservation working and it requires turbo-frames, then the entire page doesn't reload
+  // which means we need to detect a re-render of just the accordion section and then remove this disabled/saving
   disableAccordionButtons() {
     const buttons = document.querySelectorAll(".accordion-button");
     buttons.forEach(button => {

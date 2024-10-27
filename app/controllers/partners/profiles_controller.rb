@@ -29,10 +29,12 @@ module Partners
           redirect_to partners_profile_path
         end
       else
+        # TODO: 4504 - If using turbo frames, validation errors not rendering
         flash.now[:error] = "There is a problem. Try again:  %s" % result.error
         if Flipper.enabled?("partner_step_form")
           @open_section = params[:submitted_partial] || "agency_information"
-          render "partners/profiles/step/edit"
+          render "partners/profiles/step/edit", status: :unprocessable_entity
+          # render "partners/profiles/step/edit"
         else
           render :edit
         end

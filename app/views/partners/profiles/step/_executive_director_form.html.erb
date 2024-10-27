@@ -1,4 +1,4 @@
-<%= simple_form_for partner, data: { controller: "form-input" }, url: partners_profile_path(submitted_partial: "executive_director") do |f| %>
+<%= simple_form_for partner, data: { controller: "form-input", turbo_action: "restore" }, url: partners_profile_path(submitted_partial: "executive_director") do |f| %>
   <%= f.fields_for :profile, profile do |pf| %>
     <div class="form-group">
       <%= pf.input :executive_director_name, label: "Executive Director Name", class: "form-control" %>

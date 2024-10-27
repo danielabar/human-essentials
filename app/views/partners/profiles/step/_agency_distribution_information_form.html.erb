@@ -1,4 +1,5 @@
-<%= simple_form_for partner, data: { controller: "form-input" }, url: partners_profile_path(submitted_partial: "agency_distribution_information") do |f| %>
+<%# TODO: 4504 - does turbo-action even make sense here or is that only supposed to be defined on the turbo-frame tag? %>
+<%= simple_form_for partner, data: { controller: "form-input", turbo_action: "restore" }, url: partners_profile_path(submitted_partial: "agency_distribution_information") do |f| %>
   <%= f.fields_for :profile, profile do |pf| %>
     <h3><strong>Agency Distribution Information</strong></h3>
 
