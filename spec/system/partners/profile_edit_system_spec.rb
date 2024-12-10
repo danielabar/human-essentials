@@ -98,5 +98,43 @@ RSpec.describe "Partners profile edit", type: :system, js: true do
       expect(page).to have_css("#pick_up_person.accordion-collapse.collapse.show", visible: true)
       expect(page).to have_css("#partner_settings.accordion-collapse.collapse.show", visible: true)
     end
+
+    it "preserves previously uploaded documents when adding new attachments" do
+      # Upload the first document
+      find("button[data-bs-target='#attached_documents']").click
+      expect(page).to have_css("#attached_documents.accordion-collapse.collapse.show", visible: true)
+
+      within "#attached_documents" do
+        attach_file("partner_profile_documents", Rails.root.join("spec/fixtures/files/document1.md"), make_visible: true)
+      end
+
+      # Save Progress
+      all("input[type='submit'][value='Save Progress']").last.click
+      expect(page).to have_css(".alert-success", text: "Details were successfully updated.")
+
+      # Verify the document is listed
+      visit edit_partners_profile_path
+      find("button[data-bs-target='#attached_documents']").click
+      within "#attached_documents" do
+        expect(page).to have_link("document1.md")
+      end
+
+      # Upload a second document
+      within "#attached_documents" do
+        attach_file("partner_profile_documents", Rails.root.join("spec/fixtures/files/document2.md"), make_visible: true)
+      end
+
+      # Save Progress
+      all("input[type='submit'][value='Save Progress']").last.click
+      expect(page).to have_css(".alert-success", text: "Details were successfully updated.")
+
+      # Verify both documents are listed
+      visit edit_partners_profile_path
+      find("button[data-bs-target='#attached_documents']").click
+      within "#attached_documents" do
+        expect(page).to have_link("document1.md")
+        expect(page).to have_link("document2.md")
+      end
+    end
   end
 end
