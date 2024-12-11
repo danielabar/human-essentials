@@ -13,14 +13,18 @@
                   Attached files:
                   <ul>
                     <% profile.documents.each do |doc| %>
-                      <li><%= link_to doc.blob['filename'], rails_blob_path(doc), class: "font-weight-bold" %></li>
+                      <% if doc.persisted? %>
+                        <li><%= link_to doc.blob['filename'], rails_blob_path(doc), class: "font-weight-bold" %></li>
+                      <% end %>
                     <% end %>
                   </ul>
                 </div>
                 <div class="col-6">
                   <%# https://guides.rubyonrails.org/v7.1/active_storage_overview.html#replacing-vs-adding-attachments %>
                   <% profile.documents.each do |document| %>
-                    <%= form.hidden_field :documents, multiple: true, value: document.signed_id %>
+                    <% if document.persisted? %>
+                      <%= form.hidden_field :documents, multiple: true, value: document.signed_id %>
+                    <% end %>
                   <% end %>
                   <%= form.file_field :documents, multiple: true, class: "form-control-file" %>
                 </div>
