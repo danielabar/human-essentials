@@ -16,9 +16,13 @@ module Partners
 
     def update
       @counties = County.in_category_name_order
+
+      new_document_uploaded = detect_new_documents?(profile_params)
       result = PartnerProfileUpdateService.new(current_partner, partner_params, profile_params).call
+
       if result.success?
         flash[:success] = "Details were successfully updated."
+
         if Flipper.enabled?("partner_step_form")
           if params[:save_review]
             redirect_to partners_profile_path
@@ -29,7 +33,9 @@ module Partners
           redirect_to partners_profile_path
         end
       else
-        flash.now[:error] = "There is a problem. Try again:  %s" % result.error
+        flash.now[:error] = "There is a problem. Try again: %s" % result.error
+        flash.now[:alert] = "The file you uploaded was not saved due to validation errors. Please reattach it after fixing the errors." if new_document_uploaded
+
         if Flipper.enabled?("partner_step_form")
           error_keys = current_partner.profile.errors.attribute_names
           @sections_with_errors = Partners::SectionErrorService.sections_with_errors(error_keys)
@@ -41,6 +47,10 @@ module Partners
     end
 
     private
+
+    def detect_new_documents?(profile_params)
+      profile_params[:documents].any? { |doc| doc.is_a?(ActionDispatch::Http::UploadedFile) }
+    end
 
     def partner_params
       params.require(:partner).permit(:name)
