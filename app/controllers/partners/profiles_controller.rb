@@ -14,6 +14,8 @@ module Partners
       end
     end
 
+    # TODO: 4821 introduces additional complexity in saving attachments separately if validation fails
+    # If can get this working, maybe belongs in a service to avoid complexity in the controller
     def update
       @counties = County.in_category_name_order
 
@@ -34,7 +36,7 @@ module Partners
         end
       else
         flash.now[:error] = "There is a problem. Try again: %s" % result.error
-        flash.now[:alert] = "The file you uploaded was not saved due to validation errors. Please reattach it after fixing the errors." if new_document_uploaded
+        save_documents(profile_params) if new_document_uploaded
 
         if Flipper.enabled?("partner_step_form")
           error_keys = current_partner.profile.errors.attribute_names
@@ -50,6 +52,20 @@ module Partners
 
     def detect_new_documents?(profile_params)
       profile_params[:documents].any? { |doc| doc.is_a?(ActionDispatch::Http::UploadedFile) }
+    end
+
+    # Kind of fighting Rails here because the suggested way to save docs when validation error is to use direct uploads:
+    # https://edgeguides.rubyonrails.org/active_storage_overview.html#form-validation
+    # But that involves devops work in setting CORS on Azure FileStorage, and cron job to cleanup attachments that never got associated with a model
+    def save_documents(profile_params)
+      current_partner_profile_id = current_partner.profile.id
+      temp_profile = Partners::Profile.find(current_partner_profile_id)
+      documents = profile_params[:documents]
+      temp_profile.documents.attach(documents)
+      temp_profile.save!
+      # this ensures the profile will display attached docs when view is rendered with validation errors
+      # BUT lose the invalid data which user should see to fix other validation errors
+      current_partner.profile.reload
     end
 
     def partner_params
