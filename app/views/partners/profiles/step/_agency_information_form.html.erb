@@ -16,13 +16,14 @@
     <% if profile.proof_of_partner_status.persisted? %>
       <div class="col-md-8">
         Attached file: <%= link_to profile.proof_of_partner_status.blob['filename'], rails_blob_path(profile.proof_of_partner_status), class: "font-weight-bold" %>
-        <%= pf.file_field :proof_of_partner_status, class: "form-control-file" %>
+        <%= pf.file_field :proof_of_partner_status, direct_upload: true, class: "form-control-file" %>
       </div>
     <% else %>
       <div class="col-md-8">
 
         <%# TODO: 4472 styling of the dont worry message %>
         <%# TODO: 4472 will need this for all profile attachments %>
+        <%# TODO: 4472 maybe this should be a partial, at least for the single attachments %>
         <%# TODO: 4472 how will this work with has_many_attached because that needs a hidden field for a different reason %>
         <%# If it's not persisted but attached, it means user attempted an upload but ran into other form validation issues %>
         <%# Let's show the user that we still have the attempt in memory (because actual blob has already been persisted due to direct upload) %>
