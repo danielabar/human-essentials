@@ -58,57 +58,138 @@ function isShortHeightScreen() {
 }
 
 $(document).ready(function(){
-    const hash = window.location.hash;
-    if (hash) {
-      $('ul.nav a[href="' + hash + '"]').tab('show');
-    }
-    const isMobile = isMobileResolution();
-    const isShortHeight = isShortHeightScreen();
+  const hash = window.location.hash;
+  if (hash) {
+    $('ul.nav a[href="' + hash + '"]').tab("show");
+  }
+  const isMobile = isMobileResolution();
+  const isShortHeight = isShortHeightScreen();
 
-    const calendarElement = document.getElementById('calendar');
-    if (calendarElement) {
-      new Calendar(calendarElement, {
-        timeZone: 'UTC',
-        firstDay: 1,
-        plugins: [luxonPlugin, dayGridPlugin, listPlugin],
-        displayEventTime: true,
-        eventLimit: true,
-        events: 'schedule.json',
-        height: isMobile || isShortHeight ? 'auto' : 'parent',
-        defaultView: isMobile ? 'listWeek' : 'month'
-      }).render();
-    }
+  const calendarElement = document.getElementById("calendar");
+  if (calendarElement) {
+    new Calendar(calendarElement, {
+      timeZone: "UTC",
+      firstDay: 1,
+      plugins: [luxonPlugin, dayGridPlugin, listPlugin],
+      displayEventTime: true,
+      eventLimit: true,
+      events: "schedule.json",
+      height: isMobile || isShortHeight ? "auto" : "parent",
+      defaultView: isMobile ? "listWeek" : "month",
+    }).render();
+  }
 
-    const rangeElement = document.getElementById("filters_date_range");
-    if (!rangeElement) {
-      return;
-    }
-    const today = DateTime.now();
-    const startDate = new Date(rangeElement.dataset["initialStartDate"]);
-    const endDate = new Date(rangeElement.dataset["initialEndDate"]);
+  const rangeElement = document.getElementById("filters_date_range");
+  if (!rangeElement) {
+    return;
+  }
+  const today = DateTime.now();
+  const startDate = new Date(rangeElement.dataset["initialStartDate"]);
+  const endDate = new Date(rangeElement.dataset["initialEndDate"]);
 
-    const picker = new Litepicker({
-      element: rangeElement,
-      plugins: ['ranges'],
-      startDate: startDate,
-      endDate: endDate,
-      format: "MMMM D, YYYY",
-      ranges: {
-        customRanges: {
-          'Default': [today.minus({'months': 2}).toJSDate(), today.plus({'months': 1}).toJSDate()],
-          'All Time': [today.minus({ 'years': 100 }).toJSDate(), today.plus({ 'years': 1 }).toJSDate()],
-          'Today': [today.toJSDate(), today.toJSDate()],
-          'Yesterday': [today.minus({'days': 1}).toJSDate(), today.minus({'days': 1}).toJSDate()],
-          'Last 7 Days': [today.minus({'days': 6}).toJSDate(), today.toJSDate()],
-          'Last 30 Days': [today.minus({'days': 29}).toJSDate(), today.toJSDate()],
-          'This Month': [today.startOf('month').toJSDate(), today.endOf('month').toJSDate()],
-          'Last Month': [today.minus({'months': 1}).startOf('month').toJSDate(),
-            today.minus({'month': 1}).endOf('month').toJSDate()],
-          'Last 12 Months': [today.minus({'months': 12}).plus({'days': 1}).toJSDate(), today.toJSDate()],
-          'Prior Year': [today.startOf('year').minus({'years': 1}).toJSDate(), today.minus({'year': 1}).endOf('year').toJSDate()],
-          'This Year': [today.startOf('year').toJSDate(), today.endOf('year').toJSDate()],
-        }
-      }
-    });
-    picker.setDateRange(startDate, endDate);
+  const picker = new Litepicker({
+    element: rangeElement,
+    plugins: ["ranges"],
+    startDate: startDate,
+    endDate: endDate,
+    format: "MMMM D, YYYY",
+    ranges: {
+      customRanges: {
+        Default: [
+          today.minus({ months: 2 }).toJSDate(),
+          today.plus({ months: 1 }).toJSDate(),
+        ],
+        "All Time": [
+          today.minus({ years: 100 }).toJSDate(),
+          today.plus({ years: 1 }).toJSDate(),
+        ],
+        Today: [today.toJSDate(), today.toJSDate()],
+        Yesterday: [
+          today.minus({ days: 1 }).toJSDate(),
+          today.minus({ days: 1 }).toJSDate(),
+        ],
+        "Last 7 Days": [today.minus({ days: 6 }).toJSDate(), today.toJSDate()],
+        "Last 30 Days": [
+          today.minus({ days: 29 }).toJSDate(),
+          today.toJSDate(),
+        ],
+        "This Month": [
+          today.startOf("month").toJSDate(),
+          today.endOf("month").toJSDate(),
+        ],
+        "Last Month": [
+          today.minus({ months: 1 }).startOf("month").toJSDate(),
+          today.minus({ month: 1 }).endOf("month").toJSDate(),
+        ],
+        "Last 12 Months": [
+          today.minus({ months: 12 }).plus({ days: 1 }).toJSDate(),
+          today.toJSDate(),
+        ],
+        "Prior Year": [
+          today.startOf("year").minus({ years: 1 }).toJSDate(),
+          today.minus({ year: 1 }).endOf("year").toJSDate(),
+        ],
+        "This Year": [
+          today.startOf("year").toJSDate(),
+          today.endOf("year").toJSDate(),
+        ],
+      },
+    },
+  });
+  picker.setDateRange(startDate, endDate);
+
+  // TODO: 4922 - add a data attribute to all date range inputs and iterate so we can find them all more generically than by ID
+  // but for now just to experiment with donation filter - find it specifically by ID: donation_filter_date_range
+  // or maybe doing this in a stimulus controller would be better
+  const donationFilterDateRange = document.getElementById("donation_filter_date_range");
+  const picker2 = new Litepicker({
+    element: donationFilterDateRange,
+    plugins: ["ranges"],
+    startDate: startDate,
+    endDate: endDate,
+    format: "MMMM D, YYYY",
+    ranges: {
+      customRanges: {
+        Default: [
+          today.minus({ months: 2 }).toJSDate(),
+          today.plus({ months: 1 }).toJSDate(),
+        ],
+        "All Time": [
+          today.minus({ years: 100 }).toJSDate(),
+          today.plus({ years: 1 }).toJSDate(),
+        ],
+        Today: [today.toJSDate(), today.toJSDate()],
+        Yesterday: [
+          today.minus({ days: 1 }).toJSDate(),
+          today.minus({ days: 1 }).toJSDate(),
+        ],
+        "Last 7 Days": [today.minus({ days: 6 }).toJSDate(), today.toJSDate()],
+        "Last 30 Days": [
+          today.minus({ days: 29 }).toJSDate(),
+          today.toJSDate(),
+        ],
+        "This Month": [
+          today.startOf("month").toJSDate(),
+          today.endOf("month").toJSDate(),
+        ],
+        "Last Month": [
+          today.minus({ months: 1 }).startOf("month").toJSDate(),
+          today.minus({ month: 1 }).endOf("month").toJSDate(),
+        ],
+        "Last 12 Months": [
+          today.minus({ months: 12 }).plus({ days: 1 }).toJSDate(),
+          today.toJSDate(),
+        ],
+        "Prior Year": [
+          today.startOf("year").minus({ years: 1 }).toJSDate(),
+          today.minus({ year: 1 }).endOf("year").toJSDate(),
+        ],
+        "This Year": [
+          today.startOf("year").toJSDate(),
+          today.endOf("year").toJSDate(),
+        ],
+      },
+    },
+  });
+  picker2.setDateRange(startDate, endDate);
 });

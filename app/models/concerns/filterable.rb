@@ -9,6 +9,8 @@ module Filterable
     def class_filter(filtering_params)
       results = where(nil)
       filtering_params.each do |key, value|
+        # TODO: 4922 nice to have - check method exists on model
+        # if value.present? && respond_to?(key)
         results = results.public_send(key, value) if value.present?
       end
       results

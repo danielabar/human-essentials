@@ -16,6 +16,15 @@ class DonationsController < ApplicationController
   end
 
   def index
+    # WIP: 4922 - making use of new DonationFilter model...
+    @donation_filter = DonationFilter.new(donation_filter_params)
+    donations_experiment = current_organization.donations
+                                     .includes(:storage_location, :donation_site, :product_drive, :product_drive_participant, :manufacturer, line_items: [:item])
+                                     .order(created_at: :desc)
+                                     .class_filter(@donation_filter.to_filter_params)
+                                     .during(@donation_filter.selected_range)
+
+    # TODO: 4922 - figure out what to do with this after DonationFilter active model is working
     setup_date_range_picker
 
     @donations = current_organization.donations
@@ -149,6 +158,23 @@ class DonationsController < ApplicationController
 
   def donation_item_params
     params.require(:donation).permit(:barcode_id, :item_id, :quantity)
+  end
+
+  # TODO: 4922 if this works, it will replace filter_params
+  # TODO: 4922 why do we need date_range_label?
+  def donation_filter_params
+    return {} unless params.key?(:donation_filter)
+
+    params.require(:donation_filter).permit(
+      :at_storage_location,
+      :by_source,
+      :by_product_drive,
+      :by_product_drive_participant,
+      :from_manufacturer,
+      :from_donation_site,
+      :date_range,
+      :date_range_label
+    )
   end
 
   helper_method \
