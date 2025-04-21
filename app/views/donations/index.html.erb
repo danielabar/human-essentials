@@ -33,30 +33,6 @@
           </div>
           <!-- /.card-header -->
 
-          <%# 4922 wip form bound to DonationFilter ActiveModel %>
-          <%# for now - just try to bind the date range %>
-          <%# CHALLENGE: How to test with invalid input because most of the time, litepicker.js replaces invalid user input with defaults %>
-          <div class="card-body">
-            <%= form_with(model: @donation_filter, url: donations_path, method: :get, local: true) do |f| %>
-              <div class="row">
-                <div class="form-group col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                  <%= f.label :date_range, "Date Range" %>
-                  <%# TODO: 4922 - replace `@selected_date_interval` with similar logic in DonationFilter model %>
-                  <%= f.text_field :date_range,
-                        class: "form-control",
-                        autocomplete: "on",
-                        data: {
-                          initial_start_date: @selected_date_interval.first.strftime("%B %d, %Y"),
-                          initial_end_date: @selected_date_interval.last.strftime("%B %d, %Y"),
-                        } %>
-                </div>
-              </div>
-              <div class="card-footer">
-                <%= f.submit "Apply Filters Experiment", class: "btn btn-primary" %>
-              </div>
-            <% end %>
-          </div>
-
           <!-- form start -->
           <div class="card-body">
             <%= form_tag(donations_path, method: :get) do |f| %>

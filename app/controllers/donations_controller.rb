@@ -17,12 +17,12 @@ class DonationsController < ApplicationController
 
   def index
     # WIP: 4922 - making use of new DonationFilter model...
-    @donation_filter = DonationFilter.new(donation_filter_params)
-    donations_experiment = current_organization.donations
-                                     .includes(:storage_location, :donation_site, :product_drive, :product_drive_participant, :manufacturer, line_items: [:item])
-                                     .order(created_at: :desc)
-                                     .class_filter(@donation_filter.to_filter_params)
-                                     .during(@donation_filter.selected_range)
+    # @donation_filter = DonationFilter.new(donation_filter_params)
+    # donations_experiment = current_organization.donations
+    #                                  .includes(:storage_location, :donation_site, :product_drive, :product_drive_participant, :manufacturer, line_items: [:item])
+    #                                  .order(created_at: :desc)
+    #                                  .class_filter(@donation_filter.to_filter_params)
+    #                                  .during(@donation_filter.selected_range)
 
     # TODO: 4922 - figure out what to do with this after DonationFilter active model is working
     setup_date_range_picker

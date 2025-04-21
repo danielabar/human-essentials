@@ -37,7 +37,11 @@ module DateRangeHelper
     date_range_params.split(" - ").map do |d|
       Date.strptime(d, "%B %d, %Y")
     rescue
-      raise "Invalid date: #{d} in #{date_range_params}"
+      # raise "Invalid date: #{d} in #{date_range_params}"
+      flash.now[:notice] = "Invalid Date range provided. Reset to default date range"
+      return default_date.split(" - ").map do |d|
+        Date.strptime(d.to_s, "%B %d, %Y")
+      end
     end
   end
 

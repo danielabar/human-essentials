@@ -63,19 +63,34 @@ class DonationFilter
     @end_date = 1.month.from_now.to_date
   end
 
+  # def date_range_must_be_valid
+  #   # Optional: add validation errors, but won't interfere with initialization
+  #   return if date_range.blank?
+
+  #   parts = date_range.split(" - ")
+  #   if parts.size != 2
+  #     errors.add(:date_range, "must be in format 'Month Day, Year - Month Day, Year'")
+  #   else
+  #     begin
+  #       Date.strptime(parts[0].strip, "%B %d, %Y")
+  #       Date.strptime(parts[1].strip, "%B %d, %Y")
+  #     rescue ArgumentError
+  #       errors.add(:date_range, "contains an invalid date")
+  #     end
+  #   end
+  # end
   def date_range_must_be_valid
-    # Optional: add validation errors, but won't interfere with initialization
     return if date_range.blank?
 
     parts = date_range.split(" - ")
     if parts.size != 2
-      errors.add(:date_range, "must be in format 'Month Day, Year - Month Day, Year'")
+      errors.add(:date_range, "must be in format 'Month Day, Year - Month Day, Year' (got: '#{date_range}')")
     else
       begin
         Date.strptime(parts[0].strip, "%B %d, %Y")
         Date.strptime(parts[1].strip, "%B %d, %Y")
       rescue ArgumentError
-        errors.add(:date_range, "contains an invalid date")
+        errors.add(:date_range, "contains an invalid date (got: '#{date_range}')")
       end
     end
   end
