@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import { DateTime } from "luxon";
 
 export default class extends Controller {
   static targets = ["input"];
@@ -6,15 +7,26 @@ export default class extends Controller {
   connect() {
     this.initialStart = this.inputTarget.dataset.initialStartDate;
     this.initialEnd = this.inputTarget.dataset.initialEndDate;
+    this.format = "MMMM d, yyyy";
   }
 
   validate(event) {
-    const value = this.inputTarget.value;
-    const dateRangePattern =
-      /^[A-Za-z]+\s+\d{1,2},\s+\d{4}\s+-\s+[A-Za-z]+\s+\d{1,2},\s+\d{4}$/;
+    event.preventDefault();
+    try {
+      const value = this.inputTarget.value.trim();
+      const [startStr, endStr] = value.split(" - ").map((s) => s.trim());
 
-    if (!dateRangePattern.test(value)) {
-      event.preventDefault();
+      const start = DateTime.fromFormat(startStr, this.format);
+      const end = DateTime.fromFormat(endStr, this.format);
+
+      const isValid = start.isValid && end.isValid && start <= end;
+
+      if (!isValid) {
+        alert(
+          "Please enter a valid date range (e.g., January 1, 2024 - March 15, 2024)."
+        );
+      }
+    } catch (error) {
       alert(
         "Please enter a valid date range (e.g., January 1, 2024 - March 15, 2024)."
       );
