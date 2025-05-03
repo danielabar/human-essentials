@@ -92,7 +92,7 @@ RSpec.shared_examples_for "Date Range Picker" do |described_class, date_field|
     end
 
     # This test is designed to simulate the case where a user tabs into the date range input field, types in an invalid value,
-    # and then presses Enter to submit the form. This interaction is important because, in the real application:
+    # and then presses Enter to submit the form. In the real application:
     # - When the user tabs into the field, the Litepicker.js events (which manage the date range input) don't get triggered.
     # - As a result, invalid data can be sent to the server without the client-side validation taking place.
     #
@@ -120,12 +120,19 @@ RSpec.shared_examples_for "Date Range Picker" do |described_class, date_field|
 
       expect(page).to have_css(".alert.notice", text: "Invalid Date range provided. Reset to default date range")
       expect(page).to have_css("table tbody tr", count: 4)
+    end
 
-      # temp debug
-      # logs = page.driver.browser.options.logger.string
-      # matching_logs = logs.lines.select { |line| line.include?("=== DATE RANGE") }
-      # puts "FILTERED BROWSER LOGS:"
-      # puts matching_logs
+    it "shows a JavaScript alert when user blurs" do
+      visit subject
+
+      date_range = "nov 08 - feb 08"
+      page.execute_script("document.getElementById('filters_date_range').focus();")
+      page.execute_script("document.getElementById('filters_date_range').value = '#{date_range}';")
+
+      # click anywhere else after having "tabbed" into the date field and typed an invalid date range
+      accept_alert("Please enter a valid date range (e.g., January 1, 2024 - March 15, 2024).") do
+        find('body').click
+      end
     end
   end
 end
