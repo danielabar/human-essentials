@@ -11,25 +11,33 @@ export default class extends Controller {
   }
 
   validate(event) {
-    event.preventDefault();
-    try {
-      const value = this.inputTarget.value.trim();
-      const [startStr, endStr] = value.split(" - ").map((s) => s.trim());
+    if (window.isLitepickerActive) {
+      console.log("=== DATE RANGE CONTROLLER: LITEPICKER ACTIVE ===");
+      // Skip validation if Litepicker is active
+      return;
+    } else {
+      console.log("=== DATE RANGE CONTROLLER: LITEPICKER INACTIVE ===");
+    }
 
+    event.preventDefault();
+    const value = this.inputTarget.value.trim();
+    const [startStr, endStr] = value.split(" - ").map((s) => s.trim());
+
+    const isValid = this.isValidDateRange(startStr, endStr);
+
+    if (!isValid) {
+      alert("Please enter a valid date range (e.g., January 1, 2024 - March 15, 2024).")
+    }
+  }
+
+  isValidDateRange(startStr, endStr) {
+    try {
       const start = DateTime.fromFormat(startStr, this.format);
       const end = DateTime.fromFormat(endStr, this.format);
 
-      const isValid = start.isValid && end.isValid && start <= end;
-
-      if (!isValid) {
-        alert(
-          "Please enter a valid date range (e.g., January 1, 2024 - March 15, 2024)."
-        );
-      }
+      return start.isValid && end.isValid && start <= end;
     } catch (error) {
-      alert(
-        "Please enter a valid date range (e.g., January 1, 2024 - March 15, 2024)."
-      );
+      return false;
     }
   }
 }
