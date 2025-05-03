@@ -143,12 +143,10 @@ $(document).ready(function(){
   // litepicker docs aren't clear on how to register events
   // https://github.com/wakirin/Litepicker/issues/301
   picker.on("show", () => {
-    console.log("=== APPLICATION: LITEPICKER SHOW ===");
     window.isLitepickerActive = true;
   });
 
   picker.on("hide", () => {
-    console.log("=== APPLICATION: LITEPICKER HIDE ===");
     window.isLitepickerActive = false;
   });
 

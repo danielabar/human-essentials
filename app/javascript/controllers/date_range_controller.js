@@ -11,15 +11,12 @@ export default class extends Controller {
   }
 
   validate(event) {
+    event.preventDefault();
+
     if (window.isLitepickerActive) {
-      console.log("=== DATE RANGE CONTROLLER: LITEPICKER ACTIVE ===");
-      // Skip validation if Litepicker is active
       return;
-    } else {
-      console.log("=== DATE RANGE CONTROLLER: LITEPICKER INACTIVE ===");
     }
 
-    event.preventDefault();
     const value = this.inputTarget.value.trim();
     const [startStr, endStr] = value.split(" - ").map((s) => s.trim());
 
